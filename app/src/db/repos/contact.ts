@@ -6,6 +6,9 @@ import {
   getDocs,
   doc,
   deleteDoc,
+  where,
+  query,
+  or,
 } from "firebase/firestore";
 import { Response } from "../domain/response";
 import { GetResponse } from "../domain/getResponse";
@@ -35,6 +38,7 @@ export const createContact = async (contact: Contact): Promise<Response> => {
       street: contact.street,
       zipCode: contact.zipCode,
       name: contact.name,
+      lowerName: contact.name.toLowerCase(),
       phoneNumber: contact.zipCode,
     });
     return new Response();
@@ -56,6 +60,7 @@ export const updateContact = async (id:string, contact: Contact): Promise<Respon
       street: contact.street,
       zipCode: contact.zipCode,
       name: contact.name,
+      lowerName: contact.name.toLowerCase(),
       phoneNumber: contact.zipCode,
     });
     return new Response();
@@ -86,7 +91,9 @@ export const deleteContact = async (id: string): Promise<Response> => {
 export const listContacts = async (search?: string): Promise<GetResponse<Contact[]>> => {
   try {
     let list: Contact[] = [];
-    await getDocs(collection(db, COLLECTION_NAME)).then((querySnapshot) => {
+    let newQuery = query(collection(db, COLLECTION_NAME))
+    if (Boolean(search)) newQuery = query(newQuery, or(where("phoneNumber", "==", search), where("lowerName", "==", search)))
+    await getDocs(newQuery).then((querySnapshot) => {
       const newData = querySnapshot.docs.map(
         (doc) =>
           ({
