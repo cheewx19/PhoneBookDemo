@@ -40,7 +40,7 @@ const SideBar = () => {
         <Toolbar />
         <Divider />
         <List>
-          {["Contacts", "About"].map((text, index) => (
+          {["Home", "Contacts"].map((text, index) => (
             <DrawerLink to={text.toLowerCase()}>
               <ListItem key={text} disablePadding>
                 <ListItemButton>

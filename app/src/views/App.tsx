@@ -8,7 +8,7 @@ import {
 import { Route, Routes } from "react-router-dom";
 import ContactList from "./ContactList";
 import SideBar from "../components/SideBar";
-import About from "./About";
+import Home from "./Home";
 
 const App = () => {
   const drawerWidth = 240;
@@ -21,7 +21,7 @@ const App = () => {
       >
         <Toolbar>
           <Typography variant="h6" noWrap component="div">
-            Permanent drawer
+            Your Personal Phone Book
           </Typography>
         </Toolbar>
       </AppBar>
@@ -32,8 +32,8 @@ const App = () => {
       >
         <Toolbar />
         <Routes>
+          <Route path="/home" element={<Home />} />
           <Route path="/contacts" element={<ContactList />} />
-          <Route path="/about" element={<About />} />
         </Routes>
       </Box>
     </Box>

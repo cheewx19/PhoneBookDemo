@@ -1,10 +1,10 @@
 import { Box } from '@mui/material';
 
-const About = () => {
+const Home = () => {
   return (
     <Box>
-ABOUT US
+      HOME
     </Box>
   )
 }
-export default About;
+export default Home;
