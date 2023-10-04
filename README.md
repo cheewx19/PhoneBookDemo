@@ -1,5 +1,10 @@
 # PhoneBookDemo
-User Stories
+# Tech Stack
+- React Typescript
+- Firebase
+- Material UI
+  
+# User Stories
 1. As a user, i want to see a list of contacts
 2. As a user, i want to add a new Contact in the list
 3. As a user, i want to update any contact in the list
