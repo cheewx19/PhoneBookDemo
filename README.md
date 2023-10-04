@@ -15,7 +15,13 @@
 Node.js (https://nodejs.org/en)
    
 # Installation
-`npm install`
+```
+cd app
+npm install
+```
 
 # Run the Application
-`npm run start`
+```
+cd app
+npm run start
+```
