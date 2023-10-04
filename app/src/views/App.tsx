@@ -1,10 +1,4 @@
-import {
-  AppBar,
-  Box,
-  CssBaseline,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { AppBar, Box, CssBaseline, Toolbar, Typography } from "@mui/material";
 import { Route, Routes } from "react-router-dom";
 import ContactList from "./ContactList";
 import SideBar from "../components/SideBar";
@@ -21,7 +15,7 @@ const App = () => {
       >
         <Toolbar>
           <Typography variant="h6" noWrap component="div">
-            Your Personal Phone Book
+            Phone Book Demo
           </Typography>
         </Toolbar>
       </AppBar>
@@ -32,8 +26,10 @@ const App = () => {
       >
         <Toolbar />
         <Routes>
-          <Route path="/home" element={<Home />} />
-          <Route path="/contacts" element={<ContactList />} />
+          <Route path="/">
+            <Route index element={<Home />} />
+            <Route path="/contacts" element={<ContactList />} />
+          </Route>
         </Routes>
       </Box>
     </Box>

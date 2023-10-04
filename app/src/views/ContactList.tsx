@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  CircularProgress,
   InputAdornment,
   Stack,
   Table,
@@ -11,6 +12,7 @@ import {
   TablePagination,
   TableRow,
   TextField,
+  Typography,
 } from "@mui/material";
 import { Contact, deleteContact, listContacts } from "../db/repos/contact";
 import { useEffect, useState } from "react";
@@ -18,12 +20,14 @@ import toast from "react-hot-toast";
 import { Column } from "../interfaces/table";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from "@mui/icons-material/Search";
 import ContactFormDialog from "./Forms/ContactFormDialog";
 import ConfirmationDialog from "./Forms/ConfirmationDialog";
+import SearchOffIcon from "@mui/icons-material/SearchOff";
 
 const ContactList = () => {
-  const [contacts, setContacts] = useState<Contact[]>();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [contacts, setContacts] = useState<Contact[]>([]);
   const [selectedContact, setSelectedContact] = useState<Contact>();
   const [openForm, setOpenForm] = useState<boolean>(false);
   const [openDeleteForm, setOpenDeleteForm] = useState<boolean>(false);
@@ -31,11 +35,13 @@ const ContactList = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const getContacts = async (search?: string) => {
-    setSelectedContact(undefined)
+    setSelectedContact(undefined);
     const res = await listContacts(search);
     if (res.success) {
+      setLoading(false);
       return setContacts(res.value);
     }
+    setLoading(false);
     return toast.error(res.error);
   };
 
@@ -62,42 +68,53 @@ const ContactList = () => {
   };
 
   const handleEdit = (contact: Contact) => {
-    setOpenForm(true)
-    setSelectedContact(contact)
-  }
+    setOpenForm(true);
+    setSelectedContact(contact);
+  };
 
   const handleDelete = (contact: Contact) => {
-    setOpenDeleteForm(true)
-    setSelectedContact(contact)
-  }
-  
+    setOpenDeleteForm(true);
+    setSelectedContact(contact);
+  };
+
   const onClose = () => {
-    setSelectedContact(undefined)
-    setOpenDeleteForm(false)
-    setOpenForm(false)
-  }
+    setSelectedContact(undefined);
+    setOpenDeleteForm(false);
+    setOpenForm(false);
+  };
 
   const onDelete = async (id?: string) => {
-    if (!id) return toast.error("Invalid Contact!")
-    const res = await deleteContact(id)
+    if (!id) return toast.error("Invalid Contact!");
+    const res = await deleteContact(id);
     if (res.success) {
-      toast.success("Successfully deleted this Contact!")
-      getContacts()
-      return onClose()
+      toast.success("Successfully deleted this Contact!");
+      getContacts();
+      return onClose();
     }
-    return toast.error(res.error)
-  } 
+    return toast.error(res.error);
+  };
 
   return (
     <Box>
-      <ContactFormDialog contact={selectedContact} open={openForm} onClose={onClose} refetch={getContacts} />
-      <ConfirmationDialog id={selectedContact?.id} model="Contact" open={openDeleteForm} onClose={onClose} onDelete={onDelete} />
+      <ContactFormDialog
+        contact={selectedContact}
+        open={openForm}
+        onClose={onClose}
+        refetch={getContacts}
+      />
+      <ConfirmationDialog
+        id={selectedContact?.id}
+        model="Contact"
+        open={openDeleteForm}
+        onClose={onClose}
+        onDelete={onDelete}
+      />
       <Box mb={3} display="flex" justifyContent="space-between">
         <TextField
           name="search"
-          sx={{ width: "30%"}}
+          sx={{ width: "30%" }}
           variant="outlined"
-          placeholder="Search for FULL Name or Phone Number"
+          placeholder="Search by Name"
           InputProps={{
             startAdornment: (
               <InputAdornment position="end" sx={{ mr: 2 }}>
@@ -156,6 +173,25 @@ const ContactList = () => {
                   </TableRow>
                 );
               })}
+            {loading && (
+              <TableRow tabIndex={-1}>
+                <TableCell colSpan={4}>
+                  <Box p={2} textAlign="center">
+                    <CircularProgress />
+                  </Box>
+                </TableCell>
+              </TableRow>
+            )}
+            {(!loading && contacts.length == 0) && (
+              <TableRow tabIndex={-1}>
+                <TableCell colSpan={4}>
+                  <Box p={5} textAlign="center">
+                    <SearchOffIcon fontSize="large" />
+                    <Typography variant="h6" fontWeight="400">No Results</Typography>{" "}
+                  </Box>
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </TableContainer>

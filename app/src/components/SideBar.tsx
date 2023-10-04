@@ -1,5 +1,4 @@
 import {
-  AppBar,
   Box,
   Divider,
   Drawer,
@@ -9,17 +8,28 @@ import {
   ListItemIcon,
   ListItemText,
   Toolbar,
-  Typography,
   styled,
 } from "@mui/material";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import { Link } from "react-router-dom";
+import { DrawerRoute } from "../interfaces/drawer";
 
 const DrawerLink = styled(Link)({
   textDecoration: "none",
   color: "inherit",
 });
+
+export const DrawerRoutes: DrawerRoute[] = [
+  {
+    label: "Home",
+    path: "/"
+  },
+  {
+    label: "Contacts",
+    path: "/contacts"
+  }
+]
 
 const SideBar = () => {
   const drawerWidth = 240;
@@ -40,14 +50,14 @@ const SideBar = () => {
         <Toolbar />
         <Divider />
         <List>
-          {["Home", "Contacts"].map((text, index) => (
-            <DrawerLink to={text.toLowerCase()}>
-              <ListItem key={text} disablePadding>
+          {DrawerRoutes.map((route: DrawerRoute, index: number) => (
+            <DrawerLink to={route.path}>
+              <ListItem key={route.path} disablePadding>
                 <ListItemButton>
                   <ListItemIcon>
                     {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                   </ListItemIcon>
-                  <ListItemText>{text}</ListItemText>
+                  <ListItemText>{route.label}</ListItemText>
                 </ListItemButton>
               </ListItem>
             </DrawerLink>

@@ -46,31 +46,33 @@ const ContactFormDialog = (props: ContactFormDialogProps) => {
     []
   );
   const defaultValues = {
-    name: contact?.name || '',
-    phoneNumber: contact?.phoneNumber || '',
-    city: contact?.city || '',
-    country: contact?.country || '',
-    street: contact?.street || '',
-    zipCode: contact?.zipCode || '',
+    name: contact?.name || "",
+    phoneNumber: contact?.phoneNumber || "",
+    city: contact?.city || "",
+    country: contact?.country || "",
+    street: contact?.street || "",
+    zipCode: contact?.zipCode || "",
   };
+  console.log(defaultValues);
   const {
     register,
     reset,
     handleSubmit,
-    formState: { errors },
+    formState: { isSubmitting, errors },
   } = useForm<Contact>({
     defaultValues,
     resolver: yupResolver(CONTACT_FORM_SCHEMA),
   });
 
   const onSubmit = async (values: Contact) => {
-    if (!contact?.id) return toast.error("Invalid Contact!")
+    if (contact && !contact?.id) return toast.error("Invalid Contact!");
     const res = await (contact
-      ? updateContact(contact.id, values)
+      ? updateContact(contact.id!, values)
       : createContact(values));
     if (res.success) {
       toast.success(`Contact ${contact ? "Updated" : "Added"} successfully!`);
       refetch();
+      reset()
       return onClose();
     }
     return toast.error(res.error);
@@ -80,8 +82,13 @@ const ContactFormDialog = (props: ContactFormDialogProps) => {
     reset(defaultValues);
   }, [contact]);
 
+  const handleClose = () => {
+    reset()
+    onClose()
+  }
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle>
         <Typography my={1} variant="h6" fontWeight="bold">
           Contact Form
@@ -94,20 +101,24 @@ const ContactFormDialog = (props: ContactFormDialogProps) => {
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <TextField
+                key="name"
                 fullWidth
                 label="Name*"
                 variant="outlined"
                 {...register("name")}
+                defaultValue={defaultValues.name}
                 error={Boolean(errors.name)}
                 helperText={errors.name?.message}
               />
             </Grid>
             <Grid item xs={6}>
               <TextField
+                key="phoneNumber"
                 fullWidth
                 label="Phone Number*"
                 variant="outlined"
                 {...register("phoneNumber")}
+                defaultValue={defaultValues.phoneNumber}
                 error={Boolean(errors.phoneNumber)}
                 helperText={errors.phoneNumber?.message}
               />
@@ -120,6 +131,7 @@ const ContactFormDialog = (props: ContactFormDialogProps) => {
             </Grid>
             <Grid item xs={6}>
               <TextField
+                key="country"
                 fullWidth
                 label="Country*"
                 select
@@ -138,30 +150,36 @@ const ContactFormDialog = (props: ContactFormDialogProps) => {
             </Grid>
             <Grid item xs={6}>
               <TextField
+                key="city"
                 fullWidth
                 label="City*"
                 variant="outlined"
                 {...register("city")}
+                defaultValue={defaultValues.city}
                 error={Boolean(errors.city)}
                 helperText={errors.city?.message}
               />
             </Grid>
             <Grid item xs={6}>
               <TextField
+                key="street"
                 fullWidth
                 label="Street*"
                 variant="outlined"
                 {...register("street")}
+                defaultValue={defaultValues.street}
                 error={Boolean(errors.street)}
                 helperText={errors.street?.message}
               />
             </Grid>
             <Grid item xs={6}>
               <TextField
+                key="zipCode"
                 fullWidth
                 label="Zip Code*"
                 variant="outlined"
                 {...register("zipCode")}
+                defaultValue={defaultValues.zipCode}
                 error={Boolean(errors.zipCode)}
                 helperText={errors.zipCode?.message}
               />
